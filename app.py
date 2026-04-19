@@ -16,7 +16,7 @@ st.set_page_config(page_title="Market Cycle Intelligence", layout="wide")
 st.title("🏛️ Market Cycle Intelligence")
 st.subheader("시장은 가격이 아니라 '시스템'으로 움직입니다.")
 st.markdown("""
-본 대시보드는 단순한 주가 추종을 넘어 **산업의 맥박, 글로벌 혈류, 탐욕의 온도, 이성적 중력**이라는 4대 축을 통해 
+본 대시보드는 단순한 주가 추종을 넘어 **트럭 판매량, 일본 금리, 신용융자 잔고, 버핏 지수**라는 4대 축을 통해 
 현재 시장이 사이클의 어느 지점에 위치해 있는지 입체적으로 진단합니다.
 """)
 
@@ -24,10 +24,10 @@ st.markdown("""
 def load_data():
     try:
         data_map = {
-            'Truck_Sales': 'HTRUCKSSAAR',      # 산업의 맥박 (K Units)
-            'JPY_Rate': 'IRSTCI01JPM156N',     # 글로벌 혈류 (%)
-            'Margin_Debt': 'BOGZ1FL663067003Q',# 탐욕의 온도 ($ Millions)
-            'GDP': 'GDP'                       # 이성적 중력 ($ Billions)
+            'Truck_Sales': 'HTRUCKSSAAR',      # 트럭 판매량 (K Units)
+            'JPY_Rate': 'IRSTCI01JPM156N',     # 일본 금리 (%)
+            'Margin_Debt': 'BOGZ1FL663067003Q',# 신용융자 잔고 ($ Millions)
+            'GDP': 'GDP'                       # 버핏 지수 산출용 ($ Billions)
         }
         fetched = {name: fred.get_series(s_id, observation_start='2000-01-01') for name, s_id in data_map.items()}
         sp500 = yf.download('^GSPC', start='2000-01-01')['Close']
@@ -52,7 +52,7 @@ if df is not None:
         st.markdown("""
         **1. 포커스 분석 (Legend Toggle)**
         - 차트 상단의 범례(Legend)를 클릭해 보세요. 특정 지표를 **숨기거나 다시 활성화**할 수 있습니다.
-        - **활용 예:** 'S&P 500'과 '탐욕의 온도(빚투)'만 켜두고 대조해 보면, 현재의 상승이 실물 경제에 기반한 것인지 아니면 과도한 레버리지에 의한 버블인지 직관적으로 파악할 수 있습니다.
+        - **활용 예:** 'S&P 500'과 '신용융자 잔고'만 켜두고 대조해 보면, 현재의 상승이 실물 경제에 기반한 것인지 아니면 과도한 레버리지에 의한 버블인지 직관적으로 파악할 수 있습니다.
         
         **2. 데이터 정밀 대조**
         - 차트 위에 마우스를 올리면 특정 시점의 모든 지표 수치가 동시에 표시됩니다.
@@ -68,11 +68,11 @@ if df is not None:
     # 세련된 지표명 정의
     colors = {'SP500': '#FFD700', 'Buffett_Indicator': '#00BFFF', 'Margin_Debt': '#FF8C00', 'Truck_Sales': '#00CC96', 'JPY_Rate': '#EF553B'}
     names = {
-        'SP500': '성적표 (S&P 500)', 
-        'Buffett_Indicator': '이성적 중력 (버핏 지수)', 
-        'Margin_Debt': '탐욕의 온도 (빚투)', 
-        'Truck_Sales': '산업의 맥박 (트럭 판매)', 
-        'JPY_Rate': '글로벌 혈류 (일본 금리)'
+        'SP500': 'S&P 500', 
+        'Buffett_Indicator': '버핏 지수', 
+        'Margin_Debt': '신용융자 잔고', 
+        'Truck_Sales': '트럭 판매량', 
+        'JPY_Rate': '일본 금리'
     }
     
     fig_integrated.add_trace(go.Scatter(x=df.index, y=df['SP500'], name=names['SP500'], line=dict(color=colors['SP500'], width=3), yaxis="y1"))
@@ -109,8 +109,8 @@ if df is not None:
 
     fig_sub.add_trace(go.Scatter(x=df.index, y=df['SP500'], name="S&P 500", line=dict(color=colors['SP500'], width=2)), row=1, col=1)
     fig_sub.add_trace(go.Scatter(x=df.index, y=df['Buffett_Indicator'], name="버핏 지수", line=dict(color=colors['Buffett_Indicator'], width=2)), row=2, col=1)
-    fig_sub.add_trace(go.Scatter(x=df.index, y=df['Margin_Debt'], name="빚투", line=dict(color=colors['Margin_Debt'], width=2)), row=3, col=1)
-    fig_sub.add_trace(go.Scatter(x=df.index, y=df['Truck_Sales'], name="트럭 판매", line=dict(color=colors['Truck_Sales'], width=2)), row=4, col=1)
+    fig_sub.add_trace(go.Scatter(x=df.index, y=df['Margin_Debt'], name="신용융자 잔고", line=dict(color=colors['Margin_Debt'], width=2)), row=3, col=1)
+    fig_sub.add_trace(go.Scatter(x=df.index, y=df['Truck_Sales'], name="트럭 판매량", line=dict(color=colors['Truck_Sales'], width=2)), row=4, col=1)
     fig_sub.add_trace(go.Scatter(x=df.index, y=df['JPY_Rate'], name="일본 금리", line=dict(color=colors['JPY_Rate'], width=2)), row=5, col=1)
 
     fig_sub.update_layout(height=1100, template="plotly_dark", hovermode="x unified", showlegend=False)
@@ -131,7 +131,7 @@ if df is not None:
     
     # 가독성을 위해 컬럼명 변경 및 반올림 처리
     display_df = df[['SP500', 'Buffett_Indicator', 'Margin_Debt', 'Truck_Sales', 'JPY_Rate']].tail(20).copy()
-    display_df.columns = ['S&P 500 ($)', '버핏 지수 (Ratio)', '빚투 ($M)', '트럭 판매 (K)', '일본 금리 (%)']
+    display_df.columns = ['S&P 500 ($)', '버핏 지수 (Ratio)', '신용융자 잔고 ($M)', '트럭 판매량 (K)', '일본 금리 (%)']
     
     st.dataframe(
         display_df.sort_index(ascending=False).style.format("{:,.2f}"), 
