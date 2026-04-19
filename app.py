@@ -86,11 +86,11 @@ if df is not None:
         template="plotly_dark",
         hovermode="x unified",
         xaxis=dict(domain=[0.1, 0.8], title="Timeline"),
-        yaxis=dict(title="S&P 500 (USD)", title_font=dict(color=colors['SP500']), tickfont=dict(color=colors['SP500']), side="left"),
-        yaxis2=dict(title="Buffett Ratio", title_font=dict(color=colors['Buffett_Indicator']), tickfont=dict(color=colors['Buffett_Indicator']), anchor="free", overlaying="y", side="left", position=0.0),
-        yaxis3=dict(title="Margin Debt ($M)", title_font=dict(color=colors['Margin_Debt']), tickfont=dict(color=colors['Margin_Debt']), anchor="x", overlaying="y", side="right"),
-        yaxis4=dict(title="Truck Sales (K)", title_font=dict(color=colors['Truck_Sales']), tickfont=dict(color=colors['Truck_Sales']), anchor="free", overlaying="y", side="right", position=0.9),
-        yaxis5=dict(title="JPY Rate (%)", title_font=dict(color=colors['JPY_Rate']), tickfont=dict(color=colors['JPY_Rate']), anchor="free", overlaying="y", side="right", position=1.0),
+        yaxis=dict(title="S&P 500 (USD)", title_font=dict(color=colors['SP500']), tickfont=dict(color=colors['SP500']), side="left", fixedrange=True),
+        yaxis2=dict(title="Buffett Ratio", title_font=dict(color=colors['Buffett_Indicator']), tickfont=dict(color=colors['Buffett_Indicator']), anchor="free", overlaying="y", side="left", position=0.0, fixedrange=True),
+        yaxis3=dict(title="Margin Debt ($M)", title_font=dict(color=colors['Margin_Debt']), tickfont=dict(color=colors['Margin_Debt']), anchor="x", overlaying="y", side="right", fixedrange=True),
+        yaxis4=dict(title="Truck Sales (K)", title_font=dict(color=colors['Truck_Sales']), tickfont=dict(color=colors['Truck_Sales']), anchor="free", overlaying="y", side="right", position=0.9, fixedrange=True),
+        yaxis5=dict(title="JPY Rate (%)", title_font=dict(color=colors['JPY_Rate']), tickfont=dict(color=colors['JPY_Rate']), anchor="free", overlaying="y", side="right", position=1.0, fixedrange=True),
         legend=dict(orientation="h", yanchor="bottom", y=1.05, xanchor="center", x=0.45)
     )
     st.plotly_chart(fig_integrated, use_container_width=True)
@@ -115,12 +115,12 @@ if df is not None:
 
     fig_sub.update_layout(height=1100, template="plotly_dark", hovermode="x unified", showlegend=False)
     
-    # Y축 단위 표기
-    fig_sub.update_yaxes(title_text="USD ($)", row=1, col=1)
-    fig_sub.update_yaxes(title_text="Ratio", row=2, col=1)
-    fig_sub.update_yaxes(title_text="Millions ($)", row=3, col=1)
-    fig_sub.update_yaxes(title_text="K Units", row=4, col=1)
-    fig_sub.update_yaxes(title_text="Percent (%)", row=5, col=1)
+    # Y축 단위 표기 (Y축 스크롤/이동 방지)
+    fig_sub.update_yaxes(title_text="USD ($)", fixedrange=True, row=1, col=1)
+    fig_sub.update_yaxes(title_text="Ratio", fixedrange=True, row=2, col=1)
+    fig_sub.update_yaxes(title_text="Millions ($)", fixedrange=True, row=3, col=1)
+    fig_sub.update_yaxes(title_text="K Units", fixedrange=True, row=4, col=1)
+    fig_sub.update_yaxes(title_text="Percent (%)", fixedrange=True, row=5, col=1)
 
     st.plotly_chart(fig_sub, use_container_width=True)
 
